@@ -8,4 +8,9 @@ module.exports = {
   module: {
     rules: require('./webpack.rules'),
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.GITHUB_TOKEN': JSON.stringify(process.env.GITHUB_TOKEN),
+    }),
+  ],
 };

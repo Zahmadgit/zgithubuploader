@@ -35,6 +35,8 @@
     "style-loader": "^3.3.4"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.1"
+    "dotenv": "^17.2.2",
+    "electron-squirrel-startup": "^1.0.1",
+    "webpack": "^5.101.3"
   }
 }

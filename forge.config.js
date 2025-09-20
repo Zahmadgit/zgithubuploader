@@ -1,5 +1,8 @@
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
+const dotenv = require('dotenv');
+const webpack = require('webpack');
+dotenv.config();
 
 module.exports = {
   packagerConfig: {
@@ -46,7 +49,13 @@ module.exports = {
             },
           ],
         },
+        env: '.env',
       },
+      plugins: [
+        new webpack.DefinePlugin({
+          'process.env.GITHUB_TOKEN': JSON.stringify(process.env.GITHUB_TOKEN),
+        }),
+      ],
     },
     // Fuses are used to enable/disable various Electron functionality
     // at package time, before code signing the application
@@ -65,10 +74,11 @@ module.exports = {
       name: '@electron-forge/publisher-github',
       config: {
         repository: {
-          owner: 'me',
+          owner: 'Zahmadgit',
           name: 'zgithubuploader',
         },
         prerelease: true,
+        draft: false,
       },
     },
   ],
