@@ -33,8 +33,10 @@ console.log(
 );
 import asset from '../static/assets/degenerateshit.png';
 
-console.log('Resolved image path:', asset);
-
-const img = document.createElement('img');
+const img = document.getElementById('pressableImg');
 img.src = asset;
-document.body.appendChild(img);
+img.style.cursor = 'pointer';
+
+img.onclick = () => {
+  console.log('Image clicked!');
+};

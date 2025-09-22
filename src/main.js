@@ -1,11 +1,11 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('node:path');
-
+const fetch = require('node-fetch');
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
-
+const GITHUB_TOKEN_NOTES = process.env.GITHUB_TOKEN_NOTES;
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
