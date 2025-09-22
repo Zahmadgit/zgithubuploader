@@ -6,3 +6,10 @@ body {
   max-width: 38rem;
   padding: 2rem;
 }
+
+img {
+  height: 150px;
+  width: 150px;
+  border-radius: 12px;
+  border: 2px solid rgb(195, 0, 255);
+}

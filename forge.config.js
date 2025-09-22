@@ -28,10 +28,10 @@ module.exports = {
     },
   ],
   plugins: [
-    {
-      name: '@electron-forge/plugin-auto-unpack-natives',
-      config: {},
-    },
+    // {
+    //   name: '@electron-forge/plugin-auto-unpack-natives',
+    //   config: {},
+    // },
     {
       name: '@electron-forge/plugin-webpack',
       config: {
@@ -51,35 +51,35 @@ module.exports = {
         },
         env: '.env',
       },
-      plugins: [
-        new webpack.DefinePlugin({
-          'process.env.GITHUB_TOKEN': JSON.stringify(process.env.GITHUB_TOKEN),
-        }),
-      ],
+      // plugins: [
+      //   new webpack.DefinePlugin({
+      //     'process.env.GITHUB_TOKEN': JSON.stringify(process.env.GITHUB_TOKEN),
+      //   }),
+      // ],
     },
     // Fuses are used to enable/disable various Electron functionality
     // at package time, before code signing the application
-    new FusesPlugin({
-      version: FuseVersion.V1,
-      [FuseV1Options.RunAsNode]: false,
-      [FuseV1Options.EnableCookieEncryption]: true,
-      [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
-      [FuseV1Options.EnableNodeCliInspectArguments]: false,
-      [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
-      [FuseV1Options.OnlyLoadAppFromAsar]: true,
-    }),
+    // new FusesPlugin({
+    //   version: FuseVersion.V1,
+    //   [FuseV1Options.RunAsNode]: false,
+    //   [FuseV1Options.EnableCookieEncryption]: true,
+    //   [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
+    //   [FuseV1Options.EnableNodeCliInspectArguments]: false,
+    //   [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
+    //   [FuseV1Options.OnlyLoadAppFromAsar]: true,
+    // }),
   ],
-  publishers: [
-    {
-      name: '@electron-forge/publisher-github',
-      config: {
-        repository: {
-          owner: 'Zahmadgit',
-          name: 'zgithubuploader',
-        },
-        prerelease: true,
-        draft: false,
-      },
-    },
-  ],
+  // publishers: [
+  //   {
+  //     name: '@electron-forge/publisher-github',
+  //     config: {
+  //       repository: {
+  //         owner: 'Zahmadgit',
+  //         name: 'zgithubuploader',
+  //       },
+  //       prerelease: true,
+  //       draft: false,
+  //     },
+  //   },
+  // ],
 };

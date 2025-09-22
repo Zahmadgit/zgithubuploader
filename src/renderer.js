@@ -31,3 +31,10 @@ import './index.css';
 console.log(
   '👋 This message is being logged by "renderer.js", included via webpack'
 );
+import asset from '../static/assets/degenerateshit.png';
+
+console.log('Resolved image path:', asset);
+
+const img = document.createElement('img');
+img.src = asset;
+document.body.appendChild(img);
