@@ -21,5 +21,10 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.GITHUB_TOKEN': JSON.stringify(process.env.GITHUB_TOKEN),
     }),
+    new webpack.DefinePlugin({
+      'process.env.GITHUB_TOKEN_NOTES': JSON.stringify(
+        process.env.GITHUB_TOKEN_NOTES
+      ),
+    }),
   ],
 };

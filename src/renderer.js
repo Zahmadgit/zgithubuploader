@@ -40,3 +40,21 @@ img.style.cursor = 'pointer';
 img.onclick = () => {
   console.log('Image clicked!');
 };
+console.log(window.myAPI);
+console.log(window.myAPI2.doAThing());
+
+document.getElementById('uploadBtn').addEventListener('click', async () => {
+  const note = document.getElementById('noteInput').value;
+  const result = await window.githubAPI.uploadNote({
+    owner: 'Zahmadgit',
+    repo: 'notes',
+    path: 'notes/myNote.md',
+    note,
+  });
+
+  if (result.success) {
+    alert('Note uploaded successfully yayyy');
+  } else {
+    alert('fuck: ' + result.error);
+  }
+});
