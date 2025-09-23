@@ -17,17 +17,19 @@ function getOctokit() {
 
 ipcMain.handle(
   'upload-note',
-  async (event, { owner, repo, path, note, branch }) => {
+  async (event, { owner, repo, title, note, branch }) => {
     try {
       const octokit = getOctokit();
       const contentBase64 = Buffer.from(note).toString('base64');
-      if (!path || typeof path !== 'string' || path.endsWith('/')) {
-        throw new Error(
-          "Invalid path. Provide a file path like 'notes/myNote.md' (not a directory)."
-        );
-      }
+      const rawTitle = (title || 'untitled').toString();
+      const slug =
+        rawTitle
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '') || 'untitled';
 
-      // Resolve target branch (handle main vs master or custom default branches)
+      // need to handle the branch naming conventions
       let targetBranch = branch;
       if (!targetBranch) {
         try {
@@ -40,40 +42,40 @@ ipcMain.handle(
             ? `${status || ''} ${apiMessage}`.trim()
             : getErr.message;
           throw new Error(
-            `Cannot access repo '${owner}/${repo}'. ${detailed}. ` +
-              'Ensure the token has access and the repo exists.'
+            `Cannot access repo fix this shit: '${owner}/${repo}'. ${detailed}. ` +
+              'The token might not have access or the repo doesnt exist.'
           );
         }
       }
 
-      // so if the file already exists, we gotta include its current SHA to update it
-      let currentSha = undefined;
-      try {
-        const { data: existing } = await octokit.repos.getContent({
-          owner,
-          repo,
-          path,
-          ref: targetBranch,
-        });
-        if (existing && typeof existing === 'object' && 'sha' in existing) {
-          currentSha = existing.sha;
-        }
-      } catch (getContentErr) {
-        // 404 = file nono exist; so make a new sha to create it
-        const status = getContentErr?.status || getContentErr?.response?.status;
-        if (status && status !== 404) {
-          throw getContentErr;
+      // so I actually need a unique path and to get that I can Find a unique path under notes/ by incrementing -1, -2, ... if needed
+      let candidatePath = `notes/${slug}.md`;
+      let suffix = 1;
+      while (true) {
+        try {
+          await octokit.repos.getContent({
+            owner,
+            repo,
+            path: candidatePath,
+            ref: targetBranch,
+          });
+          // for now im checking to see if it exist and then incrementing the suffix
+          candidatePath = `notes/${slug}-${suffix}.md`;
+          suffix += 1;
+        } catch (checkErr) {
+          const status = checkErr?.status || checkErr?.response?.status;
+          if (status === 404) break; // does not exist, we can create it
+          throw checkErr; // other errors bubble up
         }
       }
 
       const response = await octokit.repos.createOrUpdateFileContents({
         owner,
         repo,
-        path,
+        path: candidatePath,
         message: 'Add/Update note',
         content: contentBase64,
         branch: targetBranch,
-        sha: currentSha,
       });
       return { success: true, data: response.data };
     } catch (e) {

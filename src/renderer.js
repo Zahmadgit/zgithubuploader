@@ -44,11 +44,12 @@ console.log(window.myAPI);
 console.log(window.myAPI2.doAThing());
 
 document.getElementById('uploadBtn').addEventListener('click', async () => {
+  const title = document.getElementById('titleInput').value.trim();
   const note = document.getElementById('noteInput').value;
   const result = await window.githubAPI.uploadNote({
     owner: 'Zahmadgit',
     repo: 'notes',
-    path: 'notes/myNote.md',
+    title,
     note,
   });
 
