@@ -48,38 +48,10 @@ window.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  // Existing DOM logic
-  const img = document.getElementById('pressableImg');
-  if (img) {
-    img.src = asset;
-    img.style.cursor = 'pointer';
-    img.onclick = () => {
-      console.log('Image clicked!');
-    };
-  }
-
   console.log(window.myAPI);
   console.log(window.myAPI2.doAThing());
 
-  const uploadBtn = document.getElementById('uploadBtn');
-  if (uploadBtn) {
-    uploadBtn.addEventListener('click', async () => {
-      const title = document.getElementById('titleInput').value.trim();
-      const note = document.getElementById('noteInput').value;
-      const result = await window.githubAPI.uploadNote({
-        owner: 'Zahmadgit',
-        repo: 'notes',
-        title,
-        note,
-      });
-
-      if (result.success) {
-        alert('Note uploaded successfully yayyy');
-      } else {
-        alert('fuck: ' + result.error);
-      }
-    });
-  }
+  // Note: upload now handled in React NoteUploader component
 
   // Note: Avoid using React hooks outside React components here
 });

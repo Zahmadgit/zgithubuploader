@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import NoteUploader from './NoteUploader.jsx';
+import SexyImage from './SexyImage.jsx';
 
 export default function App() {
   const [count, setCount] = useState(0);
@@ -35,6 +37,8 @@ export default function App() {
           <p>{item.id}</p>
         </div>
       ))}
+      <NoteUploader />
+      <SexyImage />
     </div>
   );
 }
