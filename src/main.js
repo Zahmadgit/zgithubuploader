@@ -35,6 +35,7 @@ ipcMain.handle(
         try {
           const { data: repoInfo } = await octokit.repos.get({ owner, repo });
           targetBranch = repoInfo?.default_branch || 'main';
+          console.log(repoInfo);
         } catch (getErr) {
           const status = getErr?.status || getErr?.response?.status;
           const apiMessage = getErr?.response?.data?.message;
@@ -108,6 +109,30 @@ ipcMain.handle('get-products', async () => {
     return { success: true, data: json };
   } catch (e) {
     return { success: false, error: e?.message || 'Unknown error' };
+  }
+});
+
+ipcMain.handle('getRepoPath', async () => {
+  try {
+    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN_NOTES });
+
+    const response = await octokit.request(
+      'GET /repos/{owner}/{repo}/contents/{path}',
+      {
+        owner: 'Zahmadgit',
+        repo: 'notes',
+        path: '/notes',
+        headers: {
+          'X-Github-Api-Version': '2022-11-28',
+        },
+      }
+    );
+    return { success: true, data: response.data };
+  } catch (e) {
+    return {
+      success: false,
+      error: e?.message || 'VERY UNKNOWN BEHAVIOR ONISAN',
+    };
   }
 });
 

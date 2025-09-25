@@ -1,32 +1,32 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 export default function NoteUploader() {
-  const [title, setTitle] = useState("");
-  const [note, setNote] = useState("");
+  const [title, setTitle] = useState('');
+  const [note, setNote] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
 
   const handleUpload = async () => {
     const trimmedTitle = title.trim();
     if (!trimmedTitle || !note) {
-      setMessage("Title and note are required");
+      setMessage('Title and note are required');
       return;
     }
     setIsLoading(true);
-    setMessage("");
+    setMessage('');
     try {
       const result = await window.githubAPI.uploadNote({
-        owner: "Zahmadgit",
-        repo: "notes",
+        owner: 'Zahmadgit',
+        repo: 'notes',
         title: trimmedTitle,
         note,
       });
       if (result?.success) {
-        setMessage("Note uploaded successfully yayyy");
-        setTitle("");
-        setNote("");
+        setMessage('Note uploaded successfully yayyy');
+        setTitle('');
+        setNote('');
       } else {
-        setMessage(`fuck: ${result?.error || "Unknown error"}`);
+        setMessage(`fuck: ${result?.error || 'Unknown error'}`);
       }
     } catch (e) {
       setMessage(`fuck: ${e?.message || e}`);
@@ -57,7 +57,7 @@ export default function NoteUploader() {
       />
       <br />
       <button onClick={handleUpload} disabled={isLoading} id="uploadBtn">
-        {isLoading ? "Uploading…" : "Upload Note"}
+        {isLoading ? 'Uploading...' : 'Upload Note'}
       </button>
       {message && <p style={{ marginTop: 8 }}>{message}</p>}
     </div>

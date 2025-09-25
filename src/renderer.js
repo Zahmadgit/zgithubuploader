@@ -29,7 +29,7 @@
 import './index.css';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './Components/App.jsx';
+import App from './App.jsx';
 
 console.log(
   '👋 This message is being logged by "renderer.js", included via webpack'
@@ -37,7 +37,7 @@ console.log(
 import asset from '../static/assets/degenerateshit.png';
 
 window.addEventListener('DOMContentLoaded', () => {
-  // Mount React
+  // mount Reactive gaming
   const rootContainer = document.getElementById('root');
   if (rootContainer) {
     const root = createRoot(rootContainer);
