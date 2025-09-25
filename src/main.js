@@ -2,139 +2,21 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('node:path');
 const { Octokit } = require('@octokit/rest');
 const { error } = require('node:console');
+import notesUploadHandler from './IPC/notesUploadHandler';
+import productsHandler from './IPC/productsHandler';
+import repoPathHandler from './IPC/repoPathHandler';
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-function getOctokit() {
-  const GITHUB_TOKEN_NOTES = process.env.GITHUB_TOKEN_NOTES;
-  if (!GITHUB_TOKEN_NOTES) {
-    throw new Error('Github token is fucking broken');
-  }
-  return new Octokit({ auth: GITHUB_TOKEN_NOTES });
-}
-
-ipcMain.handle(
-  'upload-note',
-  async (event, { owner, repo, title, note, branch }) => {
-    try {
-      const octokit = getOctokit();
-      const contentBase64 = Buffer.from(note).toString('base64');
-      const rawTitle = (title || 'untitled').toString();
-      const slug =
-        rawTitle
-          .trim()
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/(^-|-$)/g, '') || 'untitled';
-
-      // need to handle the branch naming conventions
-      let targetBranch = branch;
-      if (!targetBranch) {
-        try {
-          const { data: repoInfo } = await octokit.repos.get({ owner, repo });
-          targetBranch = repoInfo?.default_branch || 'main';
-          console.log(repoInfo);
-        } catch (getErr) {
-          const status = getErr?.status || getErr?.response?.status;
-          const apiMessage = getErr?.response?.data?.message;
-          const detailed = apiMessage
-            ? `${status || ''} ${apiMessage}`.trim()
-            : getErr.message;
-          throw new Error(
-            `Cannot access repo fix this shit: '${owner}/${repo}'. ${detailed}. ` +
-              'The token might not have access or the repo doesnt exist.'
-          );
-        }
-      }
-
-      // so I actually need a unique path and to get that I can Find a unique path under notes/ by incrementing -1, -2, ... if needed
-      let candidatePath = `notes/${slug}.md`;
-      let suffix = 1;
-      while (true) {
-        try {
-          await octokit.repos.getContent({
-            owner,
-            repo,
-            path: candidatePath,
-            ref: targetBranch,
-          });
-          // for now im checking to see if it exist and then incrementing the suffix
-          candidatePath = `notes/${slug}-${suffix}.md`;
-          suffix += 1;
-        } catch (checkErr) {
-          const status = checkErr?.status || checkErr?.response?.status;
-          if (status === 404) break; // does not exist, we can create it
-          throw checkErr; // other errors bubble up
-        }
-      }
-
-      const response = await octokit.repos.createOrUpdateFileContents({
-        owner,
-        repo,
-        path: candidatePath,
-        message: 'Add/Update note',
-        content: contentBase64,
-        branch: targetBranch,
-      });
-      return { success: true, data: response.data };
-    } catch (e) {
-      const status = e?.status || e?.response?.status;
-      const apiMessage = e?.response?.data?.message;
-      const detailed = apiMessage
-        ? `${status || ''} ${apiMessage}`.trim()
-        : e.message;
-      console.error('GitHub API error:', {
-        status,
-        message: e.message,
-        apiMessage,
-        owner,
-        repo,
-        path,
-      });
-      return { success: false, error: detailed };
-    }
-  }
-);
+ipcMain.handle('upload-note', notesUploadHandler);
 
 // using the IPC method to do networking from main and return to renderer(for security reasons)
-ipcMain.handle('get-products', async () => {
-  try {
-    const response = await fetch('https://dummyjson.com/products?limit=100');
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-    const json = await response.json();
-    return { success: true, data: json };
-  } catch (e) {
-    return { success: false, error: e?.message || 'Unknown error' };
-  }
-});
+ipcMain.handle('get-products', productsHandler);
 
-ipcMain.handle('getRepoPath', async () => {
-  try {
-    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN_NOTES });
-
-    const response = await octokit.request(
-      'GET /repos/{owner}/{repo}/contents/{path}',
-      {
-        owner: 'Zahmadgit',
-        repo: 'notes',
-        path: '/notes',
-        headers: {
-          'X-Github-Api-Version': '2022-11-28',
-        },
-      }
-    );
-    return { success: true, data: response.data };
-  } catch (e) {
-    return {
-      success: false,
-      error: e?.message || 'VERY UNKNOWN BEHAVIOR ONISAN',
-    };
-  }
-});
+ipcMain.handle('getRepoPath', repoPathHandler);
 
 const createWindow = () => {
   // Create the browser window.
