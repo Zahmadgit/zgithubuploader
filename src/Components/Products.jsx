@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export default function App() {
+const Products = () => {
   const [count, setCount] = useState(0);
   const [data, setData] = useState([]);
   const countHandler = () => {
@@ -23,9 +23,7 @@ export default function App() {
     fetchData();
   }, []);
   return (
-    <div style={{ padding: 16 }}>
-      <h2>React root</h2>
-      <p>This section is rendered by React.</p>
+    <div>
       <p>{count}</p>
       <button onClick={() => countHandler()}>
         Press me to increment that count above me
@@ -37,4 +35,6 @@ export default function App() {
       ))}
     </div>
   );
-}
+};
+
+export default Products;
