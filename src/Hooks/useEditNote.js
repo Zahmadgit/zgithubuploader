@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-const useNoteSubFolder = () => {
-  const [repoStructure, setRepoStructure] = useState([]);
+const useEditNote = (note) => {
+  const [noteContent, setNoteContent] = useState([]);
 
   useEffect(() => {
     const fetchRepoData = async () => {
       try {
-        const results = await window.repoPathAPI.fetchRepoData();
+        const results = await window.editNoteAPI.fetchEditNote(note);
         if (results.success) {
-          setRepoStructure(results.data);
+          setNoteContent(results.data);
           console.log(results.data);
         } else {
           console.log('Error fetching repo:', results.error);
@@ -18,8 +18,8 @@ const useNoteSubFolder = () => {
       }
     };
     fetchRepoData();
-  }, []);
-  return repoStructure;
+  }, [note]);
+  return { noteContent, setNoteContent };
 };
 
-export default useNoteSubFolder;
+export default useEditNote;

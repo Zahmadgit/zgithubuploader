@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('node:path');
 const { Octokit } = require('@octokit/rest');
 const { error } = require('node:console');
+import fetchEditNotesHandler from './IPC/fetchEditNotesHandler';
 import notesUploadHandler from './IPC/notesUploadHandler';
 import productsHandler from './IPC/productsHandler';
 import repoPathHandler from './IPC/repoPathHandler';
@@ -16,7 +17,9 @@ ipcMain.handle('upload-note', notesUploadHandler);
 // using the IPC method to do networking from main and return to renderer(for security reasons)
 ipcMain.handle('get-products', productsHandler);
 
-ipcMain.handle('getRepoPath', repoPathHandler);
+ipcMain.handle('fetch-repoPath', repoPathHandler);
+
+ipcMain.handle('fetch-editNote', fetchEditNotesHandler);
 
 const createWindow = () => {
   // Create the browser window.

@@ -7,21 +7,22 @@ const Products = () => {
     setCount((prev) => prev + 1);
   };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await window.productAPI.getProducts();
-        if (result?.success) {
-          setData(result.data?.products || []);
-          console.log(result.data);
-        } else {
-          console.log(result?.error || 'Failed to fetch products');
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    };
     fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const result = await window.productAPI.getProducts();
+      if (result?.success) {
+        setData(result.data?.products || []);
+        console.log(result.data);
+      } else {
+        console.log(result?.error || 'Failed to fetch products');
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <div>
       <p>{count}</p>

@@ -22,6 +22,10 @@ contextBridge.exposeInMainWorld('productAPI', {
   getProducts: () => ipcRenderer.invoke('get-products'),
 });
 
-contextBridge.exposeInMainWorld('getRepoPath', {
-  getRepoPath: () => ipcRenderer.invoke('getRepoPath'),
+contextBridge.exposeInMainWorld('repoPathAPI', {
+  fetchRepoData: () => ipcRenderer.invoke('fetch-repoPath'),
+});
+
+contextBridge.exposeInMainWorld('editNoteAPI', {
+  fetchEditNote: (note) => ipcRenderer.invoke('fetch-editNote', note),
 });
