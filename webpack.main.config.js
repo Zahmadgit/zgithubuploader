@@ -1,18 +1,18 @@
-const webpack = require('webpack');
+const webpack = require("webpack");
 module.exports = {
   /**
    * This is the main entry point for your application, it's the first file
    * that runs in the main process.
    */
-  entry: './src/main.js',
+  entry: "./src/main.js",
   // Put your normal webpack config below here
   module: {
-    rules: require('./webpack.rules'),
+    rules: require("./webpack.rules"),
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.GITHUB_TOKEN': JSON.stringify(process.env.GITHUB_TOKEN),
-      'process.env.GITHUB_TOKEN_NOTES': JSON.stringify(
+      "process.env.GITHUB_TOKEN": JSON.stringify(process.env.GITHUB_TOKEN),
+      "process.env.GITHUB_TOKEN_NOTES": JSON.stringify(
         process.env.GITHUB_TOKEN_NOTES
       ),
     }),

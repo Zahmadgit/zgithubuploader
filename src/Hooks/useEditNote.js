@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 const useEditNote = (note) => {
   const [noteContent, setNoteContent] = useState([]);
@@ -11,10 +11,10 @@ const useEditNote = (note) => {
           setNoteContent(results.data);
           console.log(results.data);
         } else {
-          console.log('Error fetching repo:', results.error);
+          console.log("Error fetching repo:", results.error);
         }
       } catch (e) {
-        console.log('Bruh: ', e);
+        console.log("Bruh: ", e);
       }
     };
     fetchRepoData();

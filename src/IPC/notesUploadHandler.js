@@ -1,4 +1,4 @@
-import getOctokit from './getOctoKit';
+import getOctokit from "./getOctoKit";
 
 const notesUploadHandler = async (
   event,
@@ -6,31 +6,31 @@ const notesUploadHandler = async (
 ) => {
   try {
     const octokit = getOctokit();
-    const contentBase64 = Buffer.from(note).toString('base64');
-    const rawTitle = (title || 'untitled').toString();
+    const contentBase64 = Buffer.from(note).toString("base64");
+    const rawTitle = (title || "untitled").toString();
     const slug =
       rawTitle
         .trim()
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '') || 'untitled';
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "") || "untitled";
 
     // need to handle the branch naming conventions
     let targetBranch = branch;
     if (!targetBranch) {
       try {
         const { data: repoInfo } = await octokit.repos.get({ owner, repo });
-        targetBranch = repoInfo?.default_branch || 'main';
+        targetBranch = repoInfo?.default_branch || "main";
         console.log(repoInfo);
       } catch (getErr) {
         const status = getErr?.status || getErr?.response?.status;
         const apiMessage = getErr?.response?.data?.message;
         const detailed = apiMessage
-          ? `${status || ''} ${apiMessage}`.trim()
+          ? `${status || ""} ${apiMessage}`.trim()
           : getErr.message;
         throw new Error(
           `Cannot access repo fix this shit: '${owner}/${repo}'. ${detailed}. ` +
-            'The token might not have access or the repo doesnt exist.'
+            "The token might not have access or the repo doesnt exist."
         );
       }
     }
@@ -60,7 +60,7 @@ const notesUploadHandler = async (
       owner,
       repo,
       path: candidatePath,
-      message: 'Add/Update note',
+      message: "Add/Update note",
       content: contentBase64,
       branch: targetBranch,
     });
@@ -69,9 +69,9 @@ const notesUploadHandler = async (
     const status = e?.status || e?.response?.status;
     const apiMessage = e?.response?.data?.message;
     const detailed = apiMessage
-      ? `${status || ''} ${apiMessage}`.trim()
+      ? `${status || ""} ${apiMessage}`.trim()
       : e.message;
-    console.error('GitHub API error:', {
+    console.error("GitHub API error:", {
       status,
       message: e.message,
       apiMessage,

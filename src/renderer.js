@@ -26,19 +26,19 @@
  * ```
  */
 
-import './index.css';
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App.jsx';
+import "./index.css";
+import React from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.jsx";
 
 console.log(
   '👋 This message is being logged by "renderer.js", included via webpack'
 );
-import asset from '../static/assets/degenerateshit.png';
+import asset from "../static/assets/degenerateshit.png";
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener("DOMContentLoaded", () => {
   // mount Reactive gaming
-  const rootContainer = document.getElementById('root');
+  const rootContainer = document.getElementById("root");
   if (rootContainer) {
     const root = createRoot(rootContainer);
     root.render(
@@ -47,9 +47,6 @@ window.addEventListener('DOMContentLoaded', () => {
       </React.StrictMode>
     );
   }
-
-  console.log(window.myAPI);
-  console.log(window.myAPI2.doAThing());
 
   // Note: upload now handled in React NoteUploader component
 

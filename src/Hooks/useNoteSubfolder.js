@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 const useNoteSubFolder = () => {
   const [repoStructure, setRepoStructure] = useState([]);
@@ -11,10 +11,10 @@ const useNoteSubFolder = () => {
           setRepoStructure(results.data);
           console.log(results.data);
         } else {
-          console.log('Error fetching repo:', results.error);
+          console.log("Error fetching repo:", results.error);
         }
       } catch (e) {
-        console.log('Bruh: ', e);
+        console.log("Bruh: ", e);
       }
     };
     fetchRepoData();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const Products = () => {
   const [count, setCount] = useState(0);
@@ -17,7 +17,7 @@ const Products = () => {
         setData(result.data?.products || []);
         console.log(result.data);
       } else {
-        console.log(result?.error || 'Failed to fetch products');
+        console.log(result?.error || "Failed to fetch products");
       }
     } catch (e) {
       console.log(e);

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import useNoteSubFolder from '../Hooks/useNoteSubfolder';
-import useEditNote from '../Hooks/useEditNote';
+import React, { useEffect, useState } from "react";
+import useNoteSubFolder from "../Hooks/useNoteSubfolder";
+import useEditNote from "../Hooks/useEditNote";
 const MapRepoFolder = () => {
   const repoStructure = useNoteSubFolder();
-  const [selected, setSelected] = useState('Select a notes file to edit');
+  const [selected, setSelected] = useState("Select a notes file to edit");
   const [opened, setOpened] = useState(false);
 
   const { noteContent, setNoteContent } = useEditNote(selected);

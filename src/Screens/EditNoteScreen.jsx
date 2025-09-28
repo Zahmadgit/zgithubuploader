@@ -1,11 +1,11 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import MapRepoFolder from '../Components/MapRepoFolder.jsx';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import MapRepoFolder from "../Components/MapRepoFolder.jsx";
 const EditNoteScreen = () => {
   const navigate = useNavigate();
   return (
     <div>
-      <button onClick={() => navigate('/')}>Go Back To Initial Screen</button>
+      <button onClick={() => navigate("/")}>Go Back To Initial Screen</button>
       <h1>Alright This screen will be used for Editing Notes</h1>
       <MapRepoFolder />
     </div>
