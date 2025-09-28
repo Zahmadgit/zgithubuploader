@@ -3,7 +3,7 @@ import useNoteSubFolder from "../Hooks/useNoteSubfolder";
 import useEditNote from "../Hooks/useEditNote";
 const MapRepoFolder = () => {
   const repoStructure = useNoteSubFolder();
-  const [selected, setSelected] = useState("Select a notes file to edit");
+  const [selected, setSelected] = useState("Select a note");
   const [opened, setOpened] = useState(false);
 
   const { noteContent, setNoteContent } = useEditNote(selected);
@@ -15,7 +15,17 @@ const MapRepoFolder = () => {
       {opened && (
         <div>
           {repoStructure?.map((item) => (
-            <div key={item.name} onClick={() => setSelected(item.path)}>
+            <div
+              key={item.name}
+              onClick={() => {
+                setSelected(item.path.toString());
+                console.log(
+                  "this is the selected path: ",
+                  item.path,
+                  typeof item.path
+                );
+              }}
+            >
               {item.name}
             </div>
           ))}
@@ -23,7 +33,7 @@ const MapRepoFolder = () => {
       )}
 
       <h2>Selected Note: {selected}</h2>
-      <p>{noteContent.name}</p>
+      <p>{noteContent}</p>
     </div>
   );
 };

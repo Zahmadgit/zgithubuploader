@@ -27,5 +27,6 @@ contextBridge.exposeInMainWorld("repoPathAPI", {
 });
 
 contextBridge.exposeInMainWorld("editNoteAPI", {
-  fetchEditNote: (note) => ipcRenderer.invoke("fetch-editNote", note),
+  fetchEditNote: (note) =>
+    ipcRenderer.invoke("fetch-editNote", note.toString()),
 });

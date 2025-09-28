@@ -15,7 +15,7 @@ const InitialScreen = () => {
         Upload Image
       </button>
       <button onClick={() => navigate("/editnotescreen")}>Edit Notes</button>
-      <Products />
+      {/* <Products /> */}
       <NoteUploader />
       <MapRepoFolder />
       <SexyImage />
