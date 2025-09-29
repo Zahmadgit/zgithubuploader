@@ -4,6 +4,7 @@ const useEditNote = (note) => {
   const [noteContent, setNoteContent] = useState("");
 
   useEffect(() => {
+    //this is probably fine... even if I named a note's title "Select a note", its path would be note/select-a-note.md
     if (note === "Select a note") {
       return;
     }

@@ -1,12 +1,14 @@
 import getOctokit from "./getOctoKit";
-
 const notesUploadHandler = async (
   event,
   { owner, repo, title, note, branch }
 ) => {
   try {
+    //need to set up github client
     const octokit = getOctokit();
+    //github requires file contents in base64 so we need to encode
     const contentBase64 = Buffer.from(note).toString("base64");
+    //transform file names to make them more readable
     const rawTitle = (title || "untitled").toString();
     const slug =
       rawTitle
@@ -15,7 +17,7 @@ const notesUploadHandler = async (
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "") || "untitled";
 
-    // need to handle the branch naming conventions
+    //picking a branch, honestly dont need to because default is main but wtever
     let targetBranch = branch;
     if (!targetBranch) {
       try {
@@ -37,22 +39,25 @@ const notesUploadHandler = async (
 
     // so I actually need a unique path and to get that I can Find a unique path under notes/ by incrementing -1, -2, ... if needed
     let candidatePath = `notes/${slug}.md`;
-    let suffix = 1;
-    while (true) {
-      try {
-        await octokit.repos.getContent({
-          owner,
-          repo,
-          path: candidatePath,
-          ref: targetBranch,
-        });
-        // for now im checking to see if it exist and then incrementing the suffix
-        candidatePath = `notes/${slug}-${suffix}.md`;
-        suffix += 1;
-      } catch (checkErr) {
-        const status = checkErr?.status || checkErr?.response?.status;
-        if (status === 404) break; // does not exist, we can create it
-        throw checkErr; // other errors bubble up
+    let sha = null;
+    let fileExists = false;
+
+    try {
+      const { data } = await octokit.repos.getContent({
+        owner,
+        repo,
+        path: candidatePath,
+        ref: targetBranch,
+      });
+      //need sha if we're updating instead of creating
+      sha = data.sha;
+      fileExists = true;
+    } catch (checkErr) {
+      if (checkErr.status === 404) {
+        // does not exist, we can create it
+        fileExists = false;
+      } else {
+        throw checkErr;
       }
     }
 
@@ -60,9 +65,10 @@ const notesUploadHandler = async (
       owner,
       repo,
       path: candidatePath,
-      message: "Add/Update note",
+      message: fileExists ? `Update note: ${slug}` : `Create note: ${slug}`,
       content: contentBase64,
       branch: targetBranch,
+      ...(fileExists ? { sha } : {}), //alright so we're updating, then include the sha
     });
     return { success: true, data: response.data };
   } catch (e) {
