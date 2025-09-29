@@ -1,22 +1,25 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('node:path');
-const { Octokit } = require('@octokit/rest');
-const { error } = require('node:console');
-import notesUploadHandler from './IPC/notesUploadHandler';
-import productsHandler from './IPC/productsHandler';
-import repoPathHandler from './IPC/repoPathHandler';
+const { app, BrowserWindow, ipcMain } = require("electron");
+const path = require("node:path");
+const { Octokit } = require("@octokit/rest");
+const { error } = require("node:console");
+import fetchEditNotesHandler from "./IPC/fetchEditNotesHandler";
+import notesUploadHandler from "./IPC/notesUploadHandler";
+import productsHandler from "./IPC/productsHandler";
+import repoPathHandler from "./IPC/repoPathHandler";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
+if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
-ipcMain.handle('upload-note', notesUploadHandler);
+ipcMain.handle("upload-note", notesUploadHandler);
 
 // using the IPC method to do networking from main and return to renderer(for security reasons)
-ipcMain.handle('get-products', productsHandler);
+ipcMain.handle("get-products", productsHandler);
 
-ipcMain.handle('getRepoPath', repoPathHandler);
+ipcMain.handle("fetch-repoPath", repoPathHandler);
+
+ipcMain.handle("fetch-editNote", fetchEditNotesHandler);
 
 const createWindow = () => {
   // Create the browser window.
@@ -27,7 +30,6 @@ const createWindow = () => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
-
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
@@ -43,7 +45,7 @@ app.whenReady().then(() => {
 
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  app.on('activate', () => {
+  app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
@@ -53,8 +55,8 @@ app.whenReady().then(() => {
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });

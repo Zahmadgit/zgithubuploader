@@ -1,9 +1,9 @@
-import React from 'react';
-import sexyAsset from '../../static/assets/degenerateshit.png';
+import React from "react";
+import sexyAsset from "../../static/assets/degenerateshit.png";
 
 const SexyImage = () => {
   const handleImageClick = () => {
-    console.log('Bruh the sexy image was just clicked');
+    console.log("Bruh the sexy image was just clicked");
   };
   return (
     <div>

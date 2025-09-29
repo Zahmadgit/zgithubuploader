@@ -1,32 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import useNoteSubFolder from "../Hooks/useNoteSubfolder";
+import useEditNote from "../Hooks/useEditNote";
 
 export default function NoteUploader() {
-  const [title, setTitle] = useState('');
-  const [note, setNote] = useState('');
+  const [title, setTitle] = useState("");
+  const [note, setNote] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
+  const repoStructure = useNoteSubFolder();
+  const [selected, setSelected] = useState("Select a note");
+  const [opened, setOpened] = useState(false);
 
+  const { noteContent, setNoteContent } = useEditNote(selected);
+
+  //noteContent changes when a selection is made so then we can populate notes
+  useEffect(() => {
+    if (noteContent) {
+      setNote(noteContent);
+    }
+  }, [noteContent]);
   const handleUpload = async () => {
     const trimmedTitle = title.trim();
     if (!trimmedTitle || !note) {
-      setMessage('Title and note are required');
+      setMessage("Title and note are required");
       return;
     }
     setIsLoading(true);
-    setMessage('');
+    setMessage("");
     try {
       const result = await window.githubAPI.uploadNote({
-        owner: 'Zahmadgit',
-        repo: 'notes',
+        owner: "Zahmadgit",
+        repo: "notes",
         title: trimmedTitle,
         note,
       });
       if (result?.success) {
-        setMessage('Note uploaded successfully yayyy');
-        setTitle('');
-        setNote('');
+        setMessage("Note uploaded successfully yayyy");
+        setTitle("");
+        setNote("");
       } else {
-        setMessage(`fuck: ${result?.error || 'Unknown error'}`);
+        setMessage(`fuck: ${result?.error || "Unknown error"}`);
       }
     } catch (e) {
       setMessage(`fuck: ${e?.message || e}`);
@@ -37,8 +50,42 @@ export default function NoteUploader() {
 
   return (
     <div style={{ marginTop: 24 }}>
-      <h3>Create a note</h3>
       <div>
+        <div>
+          <h1>
+            Select a note to edit with the dropdown or just make a new one
+          </h1>
+          <div onClick={() => setOpened((prev) => !prev)}>{selected}</div>
+          {opened && (
+            <div>
+              {repoStructure?.map((item) => (
+                <div
+                  key={item.name}
+                  onClick={() => {
+                    setSelected(item.path.toString());
+                    //string manipulation needs to be done to clean the title name
+                    setTitle(
+                      item.name
+                        .toString()
+                        .replace(/^notes\//, "")
+                        .replace(/\.md$/, "")
+                    );
+
+                    console.log(
+                      "this is the selected path: ",
+                      item.path,
+                      typeof item.path
+                    );
+                  }}
+                >
+                  {item.name}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <h2>Selected Note: {selected}</h2>
+        </div>
         <label htmlFor="titleInput">Title:</label>
         <input
           id="titleInput"
@@ -57,7 +104,7 @@ export default function NoteUploader() {
       />
       <br />
       <button onClick={handleUpload} disabled={isLoading} id="uploadBtn">
-        {isLoading ? 'Uploading...' : 'Upload Note'}
+        {isLoading ? "Uploading..." : "Upload Note"}
       </button>
       {message && <p style={{ marginTop: 8 }}>{message}</p>}
     </div>

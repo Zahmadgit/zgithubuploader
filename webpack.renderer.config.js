@@ -1,15 +1,15 @@
-const { plugins } = require('./forge.config');
-const rules = require('./webpack.rules');
-const dotenv = require('dotenv');
-const webpack = require('webpack');
+const { plugins } = require("./forge.config");
+const rules = require("./webpack.rules");
+const dotenv = require("dotenv");
+const webpack = require("webpack");
 dotenv.config();
 rules.push({
   test: /\.css$/,
-  use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+  use: [{ loader: "style-loader" }, { loader: "css-loader" }],
 });
 rules.push({
   test: /\.(png|jpe?g|gif|svg)$/i,
-  type: 'asset/resource',
+  type: "asset/resource",
 });
 
 module.exports = {
@@ -19,10 +19,10 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.GITHUB_TOKEN': JSON.stringify(process.env.GITHUB_TOKEN),
+      "process.env.GITHUB_TOKEN": JSON.stringify(process.env.GITHUB_TOKEN),
     }),
     new webpack.DefinePlugin({
-      'process.env.GITHUB_TOKEN_NOTES': JSON.stringify(
+      "process.env.GITHUB_TOKEN_NOTES": JSON.stringify(
         process.env.GITHUB_TOKEN_NOTES
       ),
     }),

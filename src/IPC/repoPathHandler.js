@@ -1,17 +1,17 @@
-import getOctokit from './getOctoKit';
+import getOctokit from "./getOctoKit";
 
 const repoPathHandler = async () => {
   try {
     const octokit = getOctokit();
 
     const response = await octokit.request(
-      'GET /repos/{owner}/{repo}/contents/{path}',
+      "GET /repos/{owner}/{repo}/contents/{path}",
       {
-        owner: 'Zahmadgit',
-        repo: 'notes',
-        path: '/notes',
+        owner: "Zahmadgit",
+        repo: "notes",
+        path: "/notes",
         headers: {
-          'X-Github-Api-Version': '2022-11-28',
+          "X-Github-Api-Version": "2022-11-28",
         },
       }
     );
@@ -19,7 +19,7 @@ const repoPathHandler = async () => {
   } catch (e) {
     return {
       success: false,
-      error: e?.message || 'VERY UNKNOWN BEHAVIOR ONISAN',
+      error: e?.message || "VERY UNKNOWN BEHAVIOR ONISAN",
     };
   }
 };
