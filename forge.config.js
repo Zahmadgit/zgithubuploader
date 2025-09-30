@@ -7,12 +7,15 @@ dotenv.config();
 module.exports = {
   packagerConfig: {
     asar: true,
+    icon: "./static/assets/degenerateshit.ico",
   },
   rebuildConfig: {},
   makers: [
     {
       name: "@electron-forge/maker-squirrel",
-      config: {},
+      config: {
+        setupIcon: "./static/assets/degenerateshit.ico",
+      },
     },
     {
       name: "@electron-forge/maker-zip",
@@ -20,7 +23,11 @@ module.exports = {
     },
     {
       name: "@electron-forge/maker-deb",
-      config: {},
+      config: {
+        options: {
+          icon: "./static/assets/degenerateshit.ico",
+        },
+      },
     },
     {
       name: "@electron-forge/maker-rpm",
