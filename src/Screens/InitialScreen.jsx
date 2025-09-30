@@ -3,8 +3,10 @@ import NoteUploader from "../Components/NoteUploader.jsx";
 import SexyImage from "../Components/SexyImage.jsx";
 import Products from "../Components/Products.jsx";
 import { useNavigate } from "react-router-dom";
+
 const InitialScreen = () => {
   const navigate = useNavigate();
+
   return (
     <div style={{ padding: 16 }}>
       <button onClick={() => navigate("/noteuploadscreen")}>
@@ -12,6 +14,9 @@ const InitialScreen = () => {
       </button>
       <button onClick={() => navigate("/imageuploadscreen")}>
         Upload Image
+      </button>
+      <button onClick={() => navigate("/tasktrackerscreen")}>
+        Task Tracker
       </button>
 
       {/* <Products /> */}
