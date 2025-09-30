@@ -3,19 +3,19 @@ import { get, set, del, clear, keys } from "../API/idbAPIHelper";
 
 const useIndexedDB = () => {
   const [taskList, setTaskList] = useState([]);
+  const [editInput, setEditInput] = useState("");
+  const [editIndex, setEditIndex] = useState(null);
   const inputRef = useRef(null);
+  const [currentKeys, setCurrentKeys] = useState([]);
 
   useEffect(() => {
     getTask();
-  }, []);
+  }, [editIndex]);
 
-  const deleteTask = async (key, index) => {
-    if (!key) {
-      return;
-    }
-    console.log(key);
+  const deleteTask = async (index) => {
+    console.log(index);
     try {
-      await del(key);
+      await del(currentKeys[index]);
       //gotta skip the item and go to index for filer so do (_, i)
       setTaskList((prev) => prev.filter((_, i) => i != index));
     } catch (e) {
@@ -26,6 +26,7 @@ const useIndexedDB = () => {
     try {
       await set(key, value);
       setTaskList((prev) => [...prev, value]);
+      inputRef.current.value = null;
     } catch (e) {
       console.log("broken asss shit: ", e);
     }
@@ -36,6 +37,9 @@ const useIndexedDB = () => {
       //if I wanna get the Values for all the keys I need to get all keys first
       const responseKeys = await keys();
       console.log(responseKeys);
+      //plan on using this ref to get the key for the put operation
+      setCurrentKeys(responseKeys);
+      console.log("responseKeys: ", currentKeys);
       //alright lets use Promise.all now...
       //Promise.all returns a promise with an array of resolved values
       const waitingPromise = await Promise.all(
@@ -50,7 +54,38 @@ const useIndexedDB = () => {
       console.log("getting some shit did not work :sadface: ", e);
     }
   };
-  return { inputRef, taskList, deleteTask, saveTask, getTask };
+  const handleEditTask = (item, index) => {
+    setEditInput(item);
+    setEditIndex(index);
+  };
+
+  const handleEditConfirm = (index) => {
+    setTaskList((prev) =>
+      prev.map((item, i) =>
+        i === index ? { ...prev, title: editInput } : item
+      )
+    );
+    saveTask(currentKeys[index], {
+      completed: false,
+      title: editInput,
+    });
+    setEditIndex(null);
+    setEditInput("");
+  };
+
+  return {
+    inputRef,
+    taskList,
+    deleteTask,
+    saveTask,
+    getTask,
+    editIndex,
+    editInput,
+    setEditInput,
+    setEditIndex,
+    handleEditTask,
+    handleEditConfirm,
+  };
 };
 
 export default useIndexedDB;

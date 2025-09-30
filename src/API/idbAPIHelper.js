@@ -9,7 +9,7 @@ const taskDBPromise = openDB("taskkeyval-store", 1, {
 export async function get(key) {
   return (await taskDBPromise).get("keyval", key);
 }
-
+//this is gonna be annoying also handling updating...
 export async function set(key, val) {
   return (await taskDBPromise).put("keyval", val, key);
 }

@@ -2,13 +2,25 @@ import React from "react";
 import useIndexedDB from "../Hooks/useIndexedDB";
 
 const TaskTracker = () => {
-  const { inputRef, taskList, deleteTask, saveTask, getTask } = useIndexedDB();
+  const {
+    inputRef,
+    taskList,
+    deleteTask,
+    saveTask,
+    getTask,
+    editIndex,
+    setEditIndex,
+    setEditInput,
+    editInput,
+    handleEditTask,
+    handleEditConfirm,
+  } = useIndexedDB();
   return (
     <div>
       <input type="text" ref={inputRef} placeholder="Type out a task to do" />
       <button
         onClick={() =>
-          saveTask(inputRef.current.value, {
+          saveTask(Math.floor((Date.now() * Math.random()) % 100000), {
             completed: false,
             title: inputRef.current.value,
           })
@@ -18,11 +30,26 @@ const TaskTracker = () => {
       </button>
       {taskList.map((item, index) => (
         <div key={item.title}>
-          <h2>{item.title}</h2>
-          <h4>{item.completed ? "Completed" : "Uncompleted"}</h4>
-          <button onClick={() => deleteTask(item.title, index)}>
-            delete a task
-          </button>
+          {editIndex === index ? (
+            <div>
+              <input
+                type="text"
+                value={editInput}
+                onChange={(e) => setEditInput(e.target.value)}
+              />
+              <button onClick={() => handleEditConfirm(index)}>Confirm</button>
+              <button onClick={() => setEditIndex(null)}>Cancel</button>
+            </div>
+          ) : (
+            <div>
+              <h2>{item.title}</h2>
+              <h4>{item.completed ? "Completed" : "Uncompleted"}</h4>
+              <button onClick={() => deleteTask(index)}>delete a task</button>
+              <button onClick={() => handleEditTask(item.title, index)}>
+                Edit a task
+              </button>
+            </div>
+          )}
         </div>
       ))}
       {/*to actually get the value of input, we can set its ref, then use ref.current.value*/}
