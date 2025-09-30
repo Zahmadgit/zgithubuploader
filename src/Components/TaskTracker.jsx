@@ -7,7 +7,6 @@ const TaskTracker = () => {
     taskList,
     deleteTask,
     saveTask,
-    getTask,
     editIndex,
     setEditIndex,
     setEditInput,
@@ -20,8 +19,7 @@ const TaskTracker = () => {
       <input type="text" ref={inputRef} placeholder="Type out a task to do" />
       <button
         onClick={() =>
-          saveTask(Math.floor((Date.now() * Math.random()) % 100000), {
-            completed: false,
+          saveTask(Date.now().toString(), {
             title: inputRef.current.value,
           })
         }
@@ -43,7 +41,6 @@ const TaskTracker = () => {
           ) : (
             <div>
               <h2>{item.title}</h2>
-              <h4>{item.completed ? "Completed" : "Uncompleted"}</h4>
               <button onClick={() => deleteTask(index)}>delete a task</button>
               <button onClick={() => handleEditTask(item.title, index)}>
                 Edit a task

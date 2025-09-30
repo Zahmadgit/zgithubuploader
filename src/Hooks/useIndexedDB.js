@@ -18,6 +18,7 @@ const useIndexedDB = () => {
       await del(currentKeys[index]);
       //gotta skip the item and go to index for filer so do (_, i)
       setTaskList((prev) => prev.filter((_, i) => i != index));
+      setCurrentKeys((prev) => prev.filter((_, i) => i !== index));
     } catch (e) {
       console.log("delete task didnt work, sadge: ", e);
     }
@@ -39,7 +40,6 @@ const useIndexedDB = () => {
       console.log(responseKeys);
       //plan on using this ref to get the key for the put operation
       setCurrentKeys(responseKeys);
-      console.log("responseKeys: ", currentKeys);
       //alright lets use Promise.all now...
       //Promise.all returns a promise with an array of resolved values
       const waitingPromise = await Promise.all(
@@ -66,7 +66,6 @@ const useIndexedDB = () => {
       )
     );
     saveTask(currentKeys[index], {
-      completed: false,
       title: editInput,
     });
     setEditIndex(null);
