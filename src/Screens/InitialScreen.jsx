@@ -19,7 +19,7 @@ const InitialScreen = () => {
         Task Tracker
       </button>
       <AutoCorrectTextInput documentElementId={"txt1"} />
-      <AutoCorrectTextInput documentElementId={"txt2"} />
+      <AutoCorrectTextInput documentElementId={"txt2"} inputType={"input"} />
       <NoteUploader />
       <SexyImage />
     </div>

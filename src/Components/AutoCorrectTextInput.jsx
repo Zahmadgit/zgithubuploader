@@ -1,13 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { testAutoCorrect, readEnglishFile } from "zautocorrect";
-// async function dictionarySetFunction() {
-//   const newSet = await readEnglishFile();
-//   console.log("this is the top level function call of: ", newSet);
-//   return newSet;
-// }
-// const dictionarySet = await dictionarySetFunction();
 
-const AutoCorrectTextInput = ({ documentElementId }) => {
+const AutoCorrectTextInput = ({ documentElementId, inputType }) => {
   const inputVal = useRef("");
   const [correctWords, setCorrectWords] = useState();
   const wordIndex = useRef(0);
@@ -35,8 +29,13 @@ const AutoCorrectTextInput = ({ documentElementId }) => {
       wordIndex.current = input.selectionStart;
     };
     input.addEventListener("input", updateCaret);
+    input.addEventListener("click", updateCaret);
+    input.addEventListener("keydown", updateCaret);
+
     return () => {
       input.removeEventListener("input", updateCaret);
+      input.removeEventListener("click", updateCaret);
+      input.removeEventListener("keydown", updateCaret);
     };
   }, []);
 
@@ -93,24 +92,12 @@ const AutoCorrectTextInput = ({ documentElementId }) => {
     console.log("correct Words Array", wordsArr.slice(0, 5));
   };
 
-  /*left off at string manipulation on the inputVal
-currently trying to turn the inputval into an array 
-also turning the word into an array
-and traversing the array, switching the elemtns at the elements
-currently not working....
-so this definitly wont work because I forgot that longer words can get 
-get switched fine but longer correction words will reach a space before
-being able to finish the correction, only replacing parcial. instead
-I should find the index at which the first space is before the word
-that needs to be corrected, and then start changing from that index 
-onwards
-*/
   const handleInputCorrection = (word) => {
     //fuck I gotta worry about the caret
     const inputValArrLength = inputVal.current.value.split("");
     let lengthToStartCorrect = 0;
 
-    for (let i = wordIndex.current - 1; i >= 0; i--) {
+    for (let i = wordIndex.current - 1; i >= 0; --i) {
       if (inputValArrLength[i] == " ") {
         console.log("the lengthToStartCorrect: ", i);
         lengthToStartCorrect = i;
@@ -155,62 +142,84 @@ onwards
         wordArrForInputValReplace
       );
     }
-
-    //testing a different method
-    // for (let i = wordIndex.current - 1; i >= 0; i--) {
-    //   console.log("Right before return: ", i);
-    //   if (inputValArr[i] == " ") {
-    //     console.log("returning early");
-    //     break;
-    //   }
-    //   console.log(
-    //     "wordArrForInputValReplace before changing: ",
-    //     wordArrForInputValReplace
-    //   );
-    //   wordArrForInputValReplace[i] = wordArr[wordCounter];
-    //   wordCounter--;
-    //   console.log(
-    //     "wordArrForInputValReplace inside loop:",
-    //     wordArrForInputValReplace
-    //   );
-    // }
     console.log("wordArrForInputValReplace: ", wordArrForInputValReplace);
     inputVal.current.value = wordArrForInputValReplace.join("");
   };
 
   return (
     <div>
-      <li>Current Input Index: {wordIndex.current}</li>
-      <input
-        id={documentElementId}
-        type="text"
-        ref={inputVal}
-        placeholder="Lets test zautocorrect"
-        onChange={(e) => {
-          handleWordCorrectCheck(e.target.value);
-        }}
-      />
-      <div style={{ flex: "row", display: "flex" }}>
-        {correctWords?.map((word) => (
-          <div
-            key={word}
-            style={{
-              border: "1px solid blue",
-              width: "90px",
-              height: "20px",
-              alignItems: "center",
-              display: "flex",
-              margin: "3px",
-              borderRadius: "4px",
+      {inputType === "input" ? (
+        <div>
+          <li>Current Input Index: {wordIndex.current}</li>
+          <textarea
+            rows={10}
+            cols={50}
+            id={documentElementId}
+            type="text"
+            ref={inputVal}
+            placeholder="Lets test zautocorrect"
+            onChange={(e) => {
+              handleWordCorrectCheck(e.target.value);
             }}
-            onClick={() => {
-              handleInputCorrection(word);
-            }}
-          >
-            <p>{word}</p>
+          />
+
+          <div style={{ flex: "row", display: "flex" }}>
+            {correctWords?.map((word) => (
+              <div
+                key={word}
+                style={{
+                  border: "1px solid blue",
+                  width: "90px",
+                  height: "20px",
+                  alignItems: "center",
+                  display: "flex",
+                  margin: "3px",
+                  borderRadius: "4px",
+                }}
+                onClick={() => {
+                  handleInputCorrection(word);
+                }}
+              >
+                <p>{word}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div>
+          <li>Current Input Index: {wordIndex.current}</li>
+          <input
+            id={documentElementId}
+            type="text"
+            ref={inputVal}
+            placeholder="Lets test zautocorrect"
+            onChange={(e) => {
+              handleWordCorrectCheck(e.target.value);
+            }}
+          />
+          <div style={{ flex: "row", display: "flex" }}>
+            {correctWords?.map((word) => (
+              <div
+                key={word}
+                style={{
+                  border: "1px solid blue",
+                  width: "90px",
+                  height: "20px",
+                  alignItems: "center",
+                  display: "flex",
+                  margin: "3px",
+                  borderRadius: "4px",
+                }}
+                onClick={() => {
+                  handleInputCorrection(word);
+                }}
+              >
+                <p>{word}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
