@@ -49,6 +49,6 @@
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.2",
     "webpack": "^5.101.3",
-    "zautocorrect": "^0.0.9"
+    "zautocorrect": "^0.1.2"
   }
 }
